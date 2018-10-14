@@ -67,7 +67,9 @@ namespace Logic.Tests
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void InsertNumber_InsertingWithSmallerBitPositionLessThan0AndWithLargeBitPositionMoreThan31_ThrownArgumentOutOfRangeException()
             => InsertNumber(12, 12, -1, 32);
-
+        
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
         public void InsertNumber_InsertingWithSmallerBitPositionMoreThanLargeBitPosition_TrownArgumentException()
             => InsertNumber(12, 12, 12, 0);
     }
