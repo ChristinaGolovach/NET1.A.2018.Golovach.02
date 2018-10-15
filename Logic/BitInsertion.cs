@@ -52,15 +52,13 @@ namespace Logic
                 throw new ArgumentException($"The value of {nameof(smallerBitNumber)} must be less than or equal to {nameof(largeBitNumber)}");
             }
 
-            int start = smallerBitNumber;
-            int end = largeBitNumber;
-            int offset = MAXBITPOSITION - 1 - end + start;
+            int offset = MAXBITPOSITION - 1 - largeBitNumber + smallerBitNumber;
 
-            int maskNumberIn = (int.MaxValue >> offset) << start;
+            int maskNumberIn = (int.MaxValue >> offset) << smallerBitNumber;
             int maskNumberSource = ~maskNumberIn;
 
             numberSource = numberSource & maskNumberSource;
-            numberIn = (numberIn << start) & maskNumberIn;
+            numberIn = (numberIn << smallerBitNumber) & maskNumberIn;
 
             int resullt = numberSource | numberIn;
 
