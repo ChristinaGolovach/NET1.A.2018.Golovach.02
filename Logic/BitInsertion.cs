@@ -8,6 +8,9 @@ namespace Logic
     /// </summary>
     public static class BitInsertion
     {
+        private const int MAXBITPOSITION = 31;
+        private const int MINBITPOSITION = 0;
+
         /// <summary>
         /// Performs the insert bits from one of the number to another in a certain range.
         /// </summary>
@@ -34,14 +37,14 @@ namespace Logic
         /// </exception>
         public static int InsertNumber(int numberSource, int numberIn, int smallerBitNumber, int largeBitNumber)
         {
-            if (smallerBitNumber < 0 || smallerBitNumber > 31)
+            if (smallerBitNumber < MINBITPOSITION || smallerBitNumber > MAXBITPOSITION)
             {
-                throw new ArgumentOutOfRangeException($"The value of {nameof(smallerBitNumber)} must be in range between 0 - 31.");
+                throw new ArgumentOutOfRangeException($"The value of {nameof(smallerBitNumber)} must be in range between {MINBITPOSITION} - {MAXBITPOSITION}.");
             }
 
-            if (largeBitNumber < 0 || largeBitNumber > 31)
+            if (largeBitNumber < MINBITPOSITION || largeBitNumber > MAXBITPOSITION)
             {
-                throw new ArgumentOutOfRangeException($"The value of {nameof(largeBitNumber)} must be in range between 0 - 31.");
+                throw new ArgumentOutOfRangeException($"The value of {nameof(largeBitNumber)} must be in range between {MINBITPOSITION} - {MAXBITPOSITION}.");
             }
 
             if (smallerBitNumber > largeBitNumber)
@@ -49,23 +52,19 @@ namespace Logic
                 throw new ArgumentException($"The value of {nameof(smallerBitNumber)} must be less than or equal to {nameof(largeBitNumber)}");
             }
 
-            numberIn = numberIn << smallerBitNumber;
+            int start = smallerBitNumber;
+            int end = largeBitNumber;
+            int offset = MAXBITPOSITION - 1 - end + start;
 
-            byte[] original = BitConverter.GetBytes(numberSource);
-            byte[] insert = BitConverter.GetBytes(numberIn);
+            int maskNumberIn = (int.MaxValue >> offset) << start;
+            int maskNumberSource = ~maskNumberIn;
 
-            BitArray originalBits = new BitArray(original);
-            BitArray insertBits = new BitArray(insert);
+            numberSource = numberSource & maskNumberSource;
+            numberIn = (numberIn << start) & maskNumberIn;
 
-            for (int i = smallerBitNumber; i <= largeBitNumber; i++)
-            {
-                originalBits[i] = insertBits[i];
-            }
+            int resullt = numberSource | numberIn;
 
-            int[] outNumber = new int[1];
-            originalBits.CopyTo(outNumber, 0);
-
-            return outNumber[0];
+            return resullt;            
         }
     }
 }
