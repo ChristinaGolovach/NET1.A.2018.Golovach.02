@@ -8,8 +8,14 @@ namespace Logic
     /// </summary>
     public static class BitInsertion
     {
-        private const int MAXBITPOSITION = 31;
-        private const int MINBITPOSITION = 0;
+        private static readonly int COUNTBITINONEBYTE;
+        private static readonly int MINBITPOSITION;
+
+        static BitInsertion()
+        {
+            COUNTBITINONEBYTE = 8;
+            MINBITPOSITION = 0;
+        }
 
         /// <summary>
         /// Performs the insert bits from one of the number to another in a certain range.
@@ -37,14 +43,16 @@ namespace Logic
         /// </exception>
         public static int InsertNumber(int numberSource, int numberIn, int smallerBitNumber, int largeBitNumber)
         {
-            if (smallerBitNumber < MINBITPOSITION || smallerBitNumber > MAXBITPOSITION)
+            int maxBitPosition = COUNTBITINONEBYTE * sizeof(int) - 1; ;
+
+            if (smallerBitNumber < MINBITPOSITION || smallerBitNumber > maxBitPosition)
             {
-                throw new ArgumentOutOfRangeException($"The value of {nameof(smallerBitNumber)} must be in range between {MINBITPOSITION} - {MAXBITPOSITION}.");
+                throw new ArgumentOutOfRangeException($"The value of {nameof(smallerBitNumber)} must be in range between {MINBITPOSITION} - {maxBitPosition}.");
             }
 
-            if (largeBitNumber < MINBITPOSITION || largeBitNumber > MAXBITPOSITION)
+            if (largeBitNumber < MINBITPOSITION || largeBitNumber > maxBitPosition)
             {
-                throw new ArgumentOutOfRangeException($"The value of {nameof(largeBitNumber)} must be in range between {MINBITPOSITION} - {MAXBITPOSITION}.");
+                throw new ArgumentOutOfRangeException($"The value of {nameof(largeBitNumber)} must be in range between {MINBITPOSITION} - {maxBitPosition}.");
             }
 
             if (smallerBitNumber > largeBitNumber)
@@ -52,7 +60,7 @@ namespace Logic
                 throw new ArgumentException($"The value of {nameof(smallerBitNumber)} must be less than or equal to {nameof(largeBitNumber)}");
             }
 
-            int offset = MAXBITPOSITION - 1 - largeBitNumber + smallerBitNumber;
+            int offset = maxBitPosition - 1 - largeBitNumber + smallerBitNumber;
 
             int maskNumberIn = (int.MaxValue >> offset) << smallerBitNumber;
             int maskNumberSource = ~maskNumberIn;
